@@ -1,13 +1,8 @@
 let currentIndex = 0;
-const imagesPerPage = 10;
+const imagesPerPage = 20;
 let selectedQuestions = [];
-let image_folder = 'renaissance_2500_generations';
-let image_data = evaluation_renaissance_data;
-// let questions = questions;
-
-// Load the image data
-// const image_data = {/* content from reformatted_image_data.js */};
-// Assuming image_data.js is already included in the HTML
+let image_folder = 'abstract_2500_generations_2';
+let image_data = evaluation_abstract_data;
 
 // Function to shuffle array elements
 function shuffle(array) {
@@ -57,25 +52,16 @@ function handleQuestionClick(questionItem, questionLabel) {
     loadImages(currentIndex);
 }
 
-// document.getElementById('multiple-questions').addEventListener('change', function() {
-//     if (!this.checked) {
-//         const selectedItems = document.querySelectorAll('.question-item.selected');
-//         selectedItems.forEach(item => item.classList.remove('selected'));
-//         selectedQuestions = [];
-//         loadImages(currentIndex);
-//     }
-// });
-
 function changeDataSource() {
     const dataSource = document.getElementById('data-source').value;
     if (dataSource === 'renaissance') {
-        image_folder = 'renaissance_2500_generations';
+        image_folder = 'renaissance_2500_generations_2';
         image_data = evaluation_renaissance_data;
     } else if (dataSource === 'landscape') {
-        image_folder = 'landscape_2500_generations';
+        image_folder = 'landscape_2500_generations_2';
         image_data = evaluation_landscape_data;
     } else if (dataSource === 'abstract') {
-        image_folder = 'abstract_2500_generations';
+        image_folder = 'abstract_2500_generations_2';
         image_data = evaluation_abstract_data;
     } 
     populateQuestions();
@@ -93,9 +79,21 @@ function loadImages(startIndex) {
     } else if (document.getElementById('deepseek').checked) {
         model = 'deepseek';
     }
+    let iterations = '35k';
+    if (document.getElementById('8k').checked) {
+        iterations = '8k';
+    } else if (document.getElementById('15k').checked) {
+        iterations = '15k';
+    } else if (document.getElementById('25k').checked) {
+        iterations = '25k';
+    } else if (document.getElementById('35k').checked) {
+        iterations = '35k';
+    }
+    const mainPlot = document.getElementById('main-plot');   
+    mainPlot.src = `clip_score_plots/${iterations}_diffusion_models_clip_score.png`;
 
     const dataSource = document.getElementById('data-source').value;
-    const diffusion_models = ['stable_diffusion_v1_5', dataSource + '_llava_15k', dataSource + '_cogvlm_15k', dataSource + '_deepseek_15k', dataSource + '_best_15k'];
+    const diffusion_models = ['stable_diffusion_v1_5', dataSource + '_llava_' + iterations, dataSource + '_cogvlm_' + iterations, dataSource + '_deepseek_' + iterations, dataSource + '_best_' + iterations];
     
     if (selectedQuestions.length === 0) {
         return;
@@ -190,14 +188,37 @@ function loadImages(startIndex) {
 
         for (let i = 0; i < diffusion_models.length; i++) {
             const diffusion_model = diffusion_models[i];
+            const imgContainer = document.createElement('div');
+            imgContainer.className = 'image-container';
             const imgElement = document.createElement('img');
-            imgElement.src = `https://raw.githubusercontent.com/photosynthesismembrane/diffusion_evaluation/main/${image_folder}/${diffusion_model}_${model}_${selectedQuestions[0]}_${image.image_filename.replace('.jpg', '')}.png`;
+            imgElement.className = 'image';
+            imgElement.src = `${image_folder}/${diffusion_model}_${model}_${selectedQuestions[0]}_${image.image_filename.replace('.jpg', '')}.png`;
             imgElement.alt = imgElement.src;
-            imageWrapper.appendChild(imgElement);
+            // imgElement.onclick = () => openModal(imgElement.src);
+            imgContainer.appendChild(imgElement);
+            imageWrapper.appendChild(imgContainer);
         }
         
         imageContainer.appendChild(imageWrapper);
     });
+}
+
+
+function openMainTab(tabId) {
+    var i, tabContent, tabButtons;
+
+    tabContent = document.getElementsByClassName("main-tab-content");
+    for (i = 0; i < tabContent.length; i++) {
+        tabContent[i].style.display = "none";
+    }
+
+    tabButtons = document.getElementsByClassName("main-tab-button");
+    for (i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+    }
+
+    document.getElementById(tabId).style.display = "block";
+    event.currentTarget.classList.add("active");
 }
 
 // Navigation functions
@@ -226,20 +247,34 @@ function scrollToFirstImage() {
 }
 
 
+function openModal(src) {
+    document.getElementById("myModal").style.display = "block";
+    document.getElementById("modalImage").src = src;
+}
+
+function closeModal() {
+    document.getElementById("myModal").style.display = "none";
+}
+
+// Close the modal when the user clicks anywhere outside of the modal content
+window.onclick = function(event) {
+    if (event.target == document.getElementById("myModal")) {
+        closeModal();
+    }
+}
+
+
 // Initialize
 populateQuestions();
-// document.getElementById('multiple-questions').addEventListener('change', function() {
-//     if (!this.checked) {
-//         const selectedItems = document.querySelectorAll('.question-item.selected');
-//         selectedItems.forEach(item => item.classList.remove('selected'));
-//         selectedQuestions = [];
-//         loadImages(currentIndex);
-//     }
-// });
 
 document.getElementById('llava').addEventListener('change', () => loadImages(currentIndex));
 document.getElementById('cogvlm').addEventListener('change', () => loadImages(currentIndex));
 document.getElementById('deepseek').addEventListener('change', () => loadImages(currentIndex));
+
+document.getElementById('8k').addEventListener('change', () => loadImages(currentIndex));
+document.getElementById('15k').addEventListener('change', () => loadImages(currentIndex));
+document.getElementById('25k').addEventListener('change', () => loadImages(currentIndex));
+document.getElementById('35k').addEventListener('change', () => loadImages(currentIndex));
 document.getElementById('data-source').addEventListener('change', changeDataSource);
 
 loadImages(currentIndex);

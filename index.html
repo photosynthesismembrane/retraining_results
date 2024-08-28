@@ -11,6 +11,44 @@
             margin: 0;
             padding: 20px;
         }
+        
+        .main-tabs {
+            overflow: hidden;
+            /* background-color: #f1f1f1;
+            border-bottom: 1px solid #ccc; */
+        }
+
+        .main-tab-button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: larger;
+            padding: 14px 16px;
+            width: 20%;
+            background-color: #f1f1f1;
+            /* margin: 0 25px 0 25px; */
+            color: #333;
+        }
+
+        .main-tab-button:hover {
+            background-color: #ddd;
+        }
+
+        .main-tab-button.active {
+            background-color: #ccc;
+        }
+
+        .main-tab-content {
+            display: none;
+            /* padding: 20px; */
+            /* border: 1px solid #ccc; */
+            border-top: none;
+        }
+
+        .main-tab-content.active {
+            display: block;
+        }
         #controls {
             margin-bottom: 20px;
             display: flex;
@@ -73,14 +111,41 @@
             display: flex;
             align-items: center;
         }
+        .image-container {
+            position: relative;
+            display: inline-block;
+            /* width: 10vw;
+            margin: 5px;
+            border: 1px solid #ccc; */
+        }
+        .image-container:hover .image {
+            transform: scale(2) translate(-50px, -50px);
+            z-index: 1000;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
         img {
-            width: 25vw;
+            width: 12.5vw;
             margin: 5px;
             border: 1px solid #ccc;
         }
+        #main-plot-container {
+            /* display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px; */
+        }
+        #main-plot {
+            width: 50%;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
         .answers {
             display: flex;
-            margin-left: 20px;
+            /* margin-left: 20px; */
         }
         .answer-box {
             margin-right: 10px;
@@ -148,15 +213,311 @@
             background-color: #d4edda; /* Light green background for checked checkboxes */
             border-color: #4caf50;
         }
+        .container {
+        display: flex;
+        /* flex-wrap: wrap; */
+        padding: 20px;
+    }
+    
+    .category {
+            flex: 1 1 45%;
+            box-sizing: border-box;
+            padding: 20px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .category h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .plots {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .plots img {
+            /* flex: 1 1 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px); */
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            background-color: #fff;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            margin: 40px;
+            display: flex;
+            justify-content: center;
+        }
+        .modal-content img {
+            width: 70%;
+            height: auto;
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+<!--     
+    <div class="main-tabs">
+        <button class="main-tab-button active" onclick="openMainTab('main-tab1')">Plots</button>
+        <button class="main-tab-button" onclick="openMainTab('main-tab2')">Results</button>
+    </div>
+
+    <div id="main-tab1" class="main-tab-content" style="display: block;">
+
+<!-- The Modal -->
+ <!--
+<div id="myModal" class="modal" style="display: none;">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div class="modal-content">
+        <img id="modalImage">
+    </div>
+</div>
+
+<div class="container">
+    <div class="category">
+        <h2>All</h2>
+        <div class="plots">
+            <img src="clip_score_plots/diffusion_models_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/llava_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/cogvlm_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/deepseek_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+        </div>
+    </div>
+    <div class="category">
+        <h2>Abstract</h2>
+        <div class="plots">
+            <img src="clip_score_plots/abstract_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_llava_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_cogvlm_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/abstract_deepseek_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+        </div>
+    </div>
+    <div class="category">
+        <h2>Landscape</h2>
+        <div class="plots">
+            <img src="clip_score_plots/landscape_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_llava_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_cogvlm_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/landscape_deepseek_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+        </div>
+    </div>
+    <div class="category">
+        <h2>Renaissance</h2>
+        <div class="plots">
+            <img src="clip_score_plots/renaissance_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_llava_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_cogvlm_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_composition_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_balance_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_movement_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_focus_point_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_contrast_elements_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_proportion_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_foreground_background_4_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_symmetry_asymmetry_1_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+            <img src="clip_score_plots/renaissance_deepseek_eye_movement_2_clip_score.png" style="width: 100%;" onclick="openModal(this.src)">
+        </div>
+    </div>
+</div>
+
+</div>
+    </div>
+    <div id="main-tab2" class="main-tab-content" style="display: none;"> -->
+
+    
     <div id="controls">
+        <div id="checkboxes">
+            <div class="checkbox-container">
+                <input type="radio" id="8k" name="iterations" value="8k">
+                <label for="8k">8k</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="radio" id="15k" name="iterations" value="15k">
+                <label for="15k">15k</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="radio" id="25k" name="iterations" value="25k">
+                <label for="25k">25k</label>
+            </div>
+            <div class="checkbox-container">
+                <input type="radio" id="35k" name="iterations" value="35k" checked>
+                <label for="35k">35k</label>
+            </div>
+        </div>
         <div class="dropdown-container">
             <select id="data-source" onchange="changeDataSource()">
-                <option value="renaissance">Renaissance</option>
-                <option value="landscape">Landscape</option>
                 <option value="abstract">Abstract</option>
+                <option value="landscape">Landscape</option>
+                <option value="renaissance">Renaissance</option>
             </select>
         </div>
         <div id="checkboxes">
@@ -177,11 +538,15 @@
             <!-- Questions will be populated here -->
         </div>
     </div>
+    <div id="main-plot-container">
+        <img id="main-plot" src="clip_score_plots/35k_diffusion_models_clip_score.png">
+    </div>
     <div id="image-container"></div>
     <div id="navigation-buttons" class="navigation">
         <button onclick="loadPrevious()">Previous</button>
         <button onclick="loadNext()">Next</button>
     </div>
+<!-- </div> -->
     <script src="evaluation_abstract_data.js"></script>
     <script src="evaluation_landscape_data.js"></script>
     <script src="evaluation_renaissance_data.js"></script>

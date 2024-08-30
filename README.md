@@ -11,6 +11,6 @@ python generate_images_from_prompts.py --js_file evaluation_abstract_data.js --m
 
 The code computes an embedding for each image and caption using the openai/clip-vit-base-patch32 encoder. Cosine similarity is computed between the embeddings. Texts are truncated at 77 tokens, since the retrained DM's do the same for input prompts.
 
-`generate_all.sh` is a script that generates images from evaluation prompts, for each diffusion model ([sd, 8k, 15k, 25k, 35k]x[abstract, landscape, renaissance]). At the end clipscores are calculated on all the generated images. 
+`generate_all.sh` is a script that generates images from evaluation prompts, for each diffusion model ([sd, 8k, 15k, 25k, 35k] x [abstract, landscape, renaissance]). At the end clipscores are calculated on all the generated images. 
 
 `create_clip_score_plots.py` creates plots from distributions of clip scores on many different categories. 

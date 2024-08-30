@@ -1,6 +1,6 @@
 # Results from retrained DM's
 
-`generate_images_from_prompts.py` uses a specified diffusion model to generate images. The prompts used to generate images should be provided in a .js file format, such as in the file `evaluation_abstract_data.js`. The repository https://github.com/photosynthesismembrane/caption_generator can generate such a file.
+`generate_images_from_prompts.py` uses a specified diffusion model to generate images. The prompts used to generate images should be provided in a .js file format, such as in the file `evaluation_abstract_data.js`. The repository https://github.com/photosynthesismembrane/caption_generator can be used to generate such a file.
 
 Example execution:
 ```
